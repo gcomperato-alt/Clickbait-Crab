@@ -46,7 +46,7 @@ function crabifyTitle(el) {
   if (!el || el.dataset.crabbed === "true") return;
 
   const original = el.innerText.trim();
-  if (!original || original.length < 8) return;
+  if (!original || original.length < 18) return;
 
   if (!isClickbait(original)) return;
 
@@ -108,9 +108,13 @@ function scanYouTubeTitles() {
   const selectors = [
     "a#video-title",
     "yt-formatted-string#video-title",
-    "h3 a",
-    "a.yt-simple-endpoint"
+    "h3 yt-formatted-string"
   ];
+
+  selectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(crabifyTitle);
+  });
+}
 
   selectors.forEach(selector => {
     document.querySelectorAll(selector).forEach(crabifyTitle);
