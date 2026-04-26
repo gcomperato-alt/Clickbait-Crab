@@ -62,10 +62,15 @@ function crabifyTitle(el) {
   el.title = "Original: " + original;
 
   el.addEventListener("click", (e) => {
-    e.stopPropagation();
+  e.stopPropagation();
+  e.preventDefault();
 
-    if (e.shiftKey) {
-      e.preventDefault();
+  if (e.shiftKey) {
+    // existing toggle code
+  }
+
+  navigator.clipboard.writeText(el.dataset.cleanTitle);
+});
 
       const showingOriginal = el.dataset.showingOriginal === "true";
 
