@@ -53,50 +53,44 @@ function crabifyTitle(el) {
   const calm = calmTitle(original);
   const crabLine = crabLines[Math.floor(Math.random() * crabLines.length)];
 
-  // Save original
   el.dataset.originalTitle = original;
   el.dataset.cleanTitle = calm;
   el.dataset.crabbed = "true";
+  el.dataset.showingOriginal = "false";
 
-  // Replace visible title
   el.innerText = calm;
-
-  // Tooltip (hover shows original)
   el.title = "Original: " + original;
 
-// Click → copy clean version
-// Shift-click → toggle original / calm title
-el.addEventListener("click", (e) => {
-  e.stopPropagation();
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-  if (e.shiftKey) {
-    e.preventDefault();
+    if (e.shiftKey) {
+      e.preventDefault();
 
-    const showingOriginal = el.dataset.showingOriginal === "true";
+      const showingOriginal = el.dataset.showingOriginal === "true";
 
-    if (showingOriginal) {
-      el.innerText = el.dataset.cleanTitle;
-      el.dataset.showingOriginal = "false";
-      el.title = "Original: " + el.dataset.originalTitle;
-    } else {
-      el.innerText = el.dataset.originalTitle;
-      el.dataset.showingOriginal = "true";
-      el.title = "Clean: " + el.dataset.cleanTitle;
+      if (showingOriginal) {
+        el.innerText = el.dataset.cleanTitle;
+        el.dataset.showingOriginal = "false";
+        el.title = "Original: " + el.dataset.originalTitle;
+      } else {
+        el.innerText = el.dataset.originalTitle;
+        el.dataset.showingOriginal = "true";
+        el.title = "Clean: " + el.dataset.cleanTitle;
+      }
+
+      return;
     }
 
-    return;
-  }
+    navigator.clipboard.writeText(el.dataset.cleanTitle);
 
-  navigator.clipboard.writeText(el.dataset.cleanTitle);
+    const old = el.innerText;
+    el.innerText = "Copied 🦀";
+    setTimeout(() => {
+      el.innerText = old;
+    }, 800);
+  });
 
-  const old = el.innerText;
-  el.innerText = "Copied 🦀";
-  setTimeout(() => {
-    el.innerText = old;
-  }, 800);
-});
-
-  // Crab tag
   const tag = document.createElement("span");
   tag.className = "clickbait-crab-tag";
   tag.innerText = crabLine;
@@ -110,11 +104,6 @@ function scanYouTubeTitles() {
     "yt-formatted-string#video-title",
     "h3 yt-formatted-string"
   ];
-
-  selectors.forEach(selector => {
-    document.querySelectorAll(selector).forEach(crabifyTitle);
-  });
-}
 
   selectors.forEach(selector => {
     document.querySelectorAll(selector).forEach(crabifyTitle);
