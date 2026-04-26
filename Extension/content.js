@@ -53,13 +53,54 @@ function crabifyTitle(el) {
   const calm = calmTitle(original);
   const crabLine = crabLines[Math.floor(Math.random() * crabLines.length)];
 
+  // Save original
   el.dataset.originalTitle = original;
+  el.dataset.cleanTitle = calm;
   el.dataset.crabbed = "true";
+
+  // Replace visible title
   el.innerText = calm;
 
+  // Tooltip (hover shows original)
+  el.title = "Original: " + original;
+
+// Click → copy clean version
+// Shift-click → toggle original / calm title
+el.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  if (e.shiftKey) {
+    e.preventDefault();
+
+    const showingOriginal = el.dataset.showingOriginal === "true";
+
+    if (showingOriginal) {
+      el.innerText = el.dataset.cleanTitle;
+      el.dataset.showingOriginal = "false";
+      el.title = "Original: " + el.dataset.originalTitle;
+    } else {
+      el.innerText = el.dataset.originalTitle;
+      el.dataset.showingOriginal = "true";
+      el.title = "Clean: " + el.dataset.cleanTitle;
+    }
+
+    return;
+  }
+
+  navigator.clipboard.writeText(el.dataset.cleanTitle);
+
+  const old = el.innerText;
+  el.innerText = "Copied 🦀";
+  setTimeout(() => {
+    el.innerText = old;
+  }, 800);
+});
+
+  // Crab tag
   const tag = document.createElement("span");
   tag.className = "clickbait-crab-tag";
   tag.innerText = crabLine;
+
   el.insertAdjacentElement("afterend", tag);
 }
 
